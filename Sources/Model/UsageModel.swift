@@ -156,9 +156,11 @@ struct ProviderSnapshot: Identifiable, Equatable {
     private var authPrompt: String {
         switch id {
         case "claude":     return "Sign in to Claude Code to read your usage"
-        case "cursor":     return "Sign in to Cursor in the editor"
         case "codex":      return "Sign in to Codex to read your usage"
-        case "gemini":     return "Sign in to Antigravity to read your usage"
+        case "grok":       return "Run Grok once from a terminal to read your usage"
+        case "svelka":     return "Run Svelka once from a terminal to read your usage"
+        case "opencode":   return "Run OpenCode once from a terminal to read your usage"
+        case "freebuff":   return "Sign in to Freebuff to read your usage"
         default:           return "Sign in to \(displayName) to read your usage"
         }
     }

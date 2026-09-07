@@ -109,10 +109,10 @@ extension UsageProvider {
 /// A provider as the settings sheet needs it.
 struct ProviderSummary: Identifiable, Equatable {
     /// Whether this provider's credential lives in the keychain, and so can be
-    /// refused. Cursor and Codex read ordinary files and never prompt, so
-    /// offering them an "allow access" button would be offering a cure for an
-    /// illness they cannot catch.
-    var usesKeychain: Bool { id == "claude" || id == "gemini" }
+    /// refused. Every other provider here reads an ordinary file and never
+    /// prompts, so offering them an "allow access" button would be offering a
+    /// cure for an illness they cannot catch.
+    var usesKeychain: Bool { id == "claude" }
 
     let id: String
     let name: String

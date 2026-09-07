@@ -546,20 +546,20 @@ final class ProviderAccountDispatchTests: XCTestCase {
     }
 }
 
-/// Antigravity's mark is flattened from its own SVG, so what is asserted is
-/// that it survived flattening: one closed loop, inside the unit box, filling
-/// it. The Gemini spark it replaced was generated, and its geometry could be
-/// checked exactly; this one comes from artwork and can only be checked for
-/// sanity.
+/// The generated marks (grok/svelka/opencode/freebuff) are plain polygons
+/// rather than traced artwork, so what is asserted is the thing a generated
+/// shape can promise exactly: one closed loop, inside the unit box.
 final class ProviderGlyphTests: XCTestCase {
-    private var loop: [CGPoint] { GlyphOutline.antigravity[0] }
-
-    func testItIsOneClosedLoopInTheUnitBox() {
-        XCTAssertEqual(GlyphOutline.antigravity.count, 1)
-        XCTAssertGreaterThan(loop.count, 50, "the curves were not flattened into enough points")
-        for p in loop {
-            XCTAssertTrue((0...1).contains(p.x), "x outside the unit box: \(p.x)")
-            XCTAssertTrue((0...1).contains(p.y), "y outside the unit box: \(p.y)")
+    func testEveryGeneratedGlyphIsOneClosedLoopInTheUnitBox() {
+        for outline in [GlyphOutline.grok, GlyphOutline.svelka,
+                        GlyphOutline.opencode, GlyphOutline.freebuff] {
+            XCTAssertEqual(outline.count, 1)
+            let loop = outline[0]
+            XCTAssertGreaterThanOrEqual(loop.count, 4, "not enough points to read as a shape")
+            for p in loop {
+                XCTAssertTrue((0...1).contains(p.x), "x outside the unit box: \(p.x)")
+                XCTAssertTrue((0...1).contains(p.y), "y outside the unit box: \(p.y)")
+            }
         }
     }
 
@@ -572,15 +572,11 @@ final class ProviderGlyphTests: XCTestCase {
     }
 
     func testEveryGlyphResolvesAnOutline() {
-        for glyph in [ProviderGlyph.claude, .openai, .third, .cursor, .antigravity] {
+        for glyph in [ProviderGlyph.claude, .openai, .grok, .svelka, .opencode, .freebuff] {
             XCTAssertFalse(glyph.outline.isEmpty, "\(glyph) draws nothing")
         }
     }
 
-    /// The raw value is what archived readings were written under.
-    func testTheRawValueSurvivesTheRename() {
-        XCTAssertEqual(ProviderGlyph.antigravity.rawValue, "gemini")
-    }
 }
 
 
@@ -878,13 +874,14 @@ final class StatusMessageHeightTests: XCTestCase {
         let states: [(String, ProviderStatus)] = [
             ("needsAuth", .needsAuth),
             ("accessDenied", .accessDenied),
-            ("unsupported", .unsupported("The free plan has nothing for Cursor to meter yet")),
+            ("unsupported", .unsupported("Grok has nothing for Codenotch to meter yet")),
             ("error", .error("HTTP 500")),
             ("stale", .stale(since: .distantPast)),
             ("ok", .ok)
         ]
-        return [("claude", "Claude"), ("cursor", "Cursor"),
-                ("codex", "Codex"), ("gemini", "Antigravity")].flatMap { id, name in
+        return [("claude", "Claude"), ("grok", "Grok"), ("svelka", "Svelka"),
+                ("codex", "Codex"), ("opencode", "OpenCode"),
+                ("freebuff", "Freebuff")].flatMap { id, name in
             states.map { state in
                 ("\(id)/\(state.0)",
                  ProviderSnapshot(id: id, displayName: name, glyph: .claude,
@@ -909,8 +906,8 @@ final class StatusMessageHeightTests: XCTestCase {
 
     /// The message that found this: three lines where one was reserved.
     func testARefusalMessageIsGivenItsRealHeight() {
-        let refused = ProviderSnapshot(id: "gemini", displayName: "Antigravity",
-                                       glyph: .antigravity, fidelity: .official,
+        let refused = ProviderSnapshot(id: "freebuff", displayName: "Freebuff",
+                                       glyph: .freebuff, fidelity: .official,
                                        status: .accessDenied, windows: [])
         let message = try! XCTUnwrap(refused.statusMessage)
         XCTAssertGreaterThan(NotchLayout.bodyTextHeight(message),

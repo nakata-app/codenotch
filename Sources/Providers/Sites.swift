@@ -5,7 +5,7 @@ enum Sites {
     static let perplexity = WebSessionProvider.Site(
         id: "perplexity",
         displayName: "Perplexity",
-        glyph: .third,
+        glyph: .freebuff,
         origin: URL(string: "https://www.perplexity.ai/")!,
         script: """
         const response = await fetch('/rest/rate-limit/all', {

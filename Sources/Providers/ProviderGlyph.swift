@@ -4,12 +4,10 @@ import SwiftUI
 enum ProviderGlyph: String, Codable, Equatable {
     case claude
     case openai
-    case third
-    case cursor
-    /// The raw value stays `gemini`: it is the key archived readings were
-    /// written under, and renaming it would make every stored reading for this
-    /// provider undecodable.
-    case antigravity = "gemini"
+    case grok
+    case svelka
+    case opencode
+    case freebuff
 
     /// If an asset with this name is in the bundle it wins over the traced
     /// outline — drop a PDF/SVG export from Figma in and it is picked up.
@@ -29,10 +27,11 @@ enum ProviderGlyph: String, Codable, Equatable {
     var opticalScale: CGFloat {
         switch self {
         case .claude: return 0.97
-        case .cursor: return 0.97
         case .openai: return 0.94
-        case .antigravity: return 1.0
-        case .third:  return 1.0
+        case .grok: return 1.0
+        case .svelka: return 1.0
+        case .opencode: return 1.0
+        case .freebuff: return 1.0
         }
     }
 
@@ -40,9 +39,10 @@ enum ProviderGlyph: String, Codable, Equatable {
         switch self {
         case .claude: return GlyphOutline.claude
         case .openai: return GlyphOutline.openai
-        case .third:  return GlyphOutline.third
-        case .cursor: return GlyphOutline.cursor
-        case .antigravity: return GlyphOutline.antigravity
+        case .grok: return GlyphOutline.grok
+        case .svelka: return GlyphOutline.svelka
+        case .opencode: return GlyphOutline.opencode
+        case .freebuff: return GlyphOutline.freebuff
         }
     }
 }

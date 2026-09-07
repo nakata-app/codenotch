@@ -61,8 +61,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             // it drew every provider from the archive and only dropped the
             // switched-off ones once the binding below delivered.
             let store = UsageStore(
-                providers: [ClaudeOAuthProvider(), CursorLocalProvider(),
-                            CodexLocalProvider(), AntigravityProvider()]
+                providers: [ClaudeOAuthProvider(), CodexLocalProvider(),
+                            GrokLocalProvider(), SvelkaLocalProvider(),
+                            OpenCodeLocalProvider(), FreebuffLocalProvider()]
                     + webProviders,
                 disconnected: preferences.disconnectedProviders
             )
@@ -179,9 +180,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         // still working without you switching to it.
         let monitors: [String: any AgentActivityMonitor] = [
             "claude": ClaudeSessionMonitor(),
-            "cursor": CursorActivityMonitor(),
-            "codex": CodexActivityMonitor(),
-            "gemini": AntigravityActivityMonitor()
+            "codex": CodexActivityMonitor()
         ]
         for (id, monitor) in monitors {
             monitor.sessionsPublisher

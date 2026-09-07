@@ -33,13 +33,13 @@ enum Fixtures {
                 ]
             ),
             ProviderSnapshot(
-                id: "third",
-                displayName: "Perplexity",
-                glyph: .third,
+                id: "grok",
+                displayName: "Grok",
+                glyph: .grok,
                 fidelity: .manual,
                 status: .ok,
                 windows: [
-                    LimitWindow(id: "third.daily", label: "Daily quota",
+                    LimitWindow(id: "grok.daily", label: "Daily quota",
                                 usedFraction: 0.52, resetsAt: midnight)
                 ]
             )
