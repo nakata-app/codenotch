@@ -32,12 +32,22 @@ struct ClaudeCredentials {
     /// different behaviour and only one of them is worth alarming anyone about.
     static func load() throws -> ClaudeCredentials {
         try cache.value(
-            itemModifiedAt: { KeychainItem.modifiedAt(service: service) },
+            itemModifiedAt: { fileModifiedAt() ?? KeychainItem.modifiedAt(service: service) },
             reload: read
         )
     }
 
+    static let credentialsFile = FileManager.default.homeDirectoryForCurrentUser
+        .appendingPathComponent(".claude/.credentials.json")
+
+    private static func fileModifiedAt() -> Date? {
+        (try? FileManager.default.attributesOfItem(atPath: credentialsFile.path))?[.modificationDate] as? Date
+    }
+
     private static func read() throws -> ClaudeCredentials {
+        if let data = try? Data(contentsOf: credentialsFile) {
+            return try decode(data)
+        }
         var item: CFTypeRef?
         let status = SecItemCopyMatching([
             kSecClass: kSecClassGenericPassword,
@@ -56,7 +66,10 @@ struct ClaudeCredentials {
                 ? UsageProviderError.accessDenied
                 : UsageProviderError.needsAuth
         }
+        return try decode(data)
+    }
 
+    private static func decode(_ data: Data) throws -> ClaudeCredentials {
         struct Payload: Decodable {
             struct OAuth: Decodable {
                 let accessToken: String
